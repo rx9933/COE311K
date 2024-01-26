@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from math import sqrt, tanh, factorial, pi
-import random
 
 # problem 1
 def exact_velocity(cd, m, t, g):
@@ -20,6 +19,13 @@ def forward_Euler_velocity(cd, m, t, g):
         v[stepNo] = v[stepNo-1] + dt*(g-cd/m*(v[stepNo-1])**2)
         stepNo+=1
     return np.array(v)
+
+# problem 5
+def root_mean_square_error(maxt, dt, cd, m, t, g):
+    tsteps = int(maxt/dt) + 1
+    t = np.linspace(0,maxt, tsteps)
+    dv = np.array(exact_velocity(cd, m, t, g) - forward_Euler_velocity(cd, m, t, g))
+    return sqrt(np.sum(dv**2)/tsteps)
 
 # bonus, part1
 def mat_mat_mul(matrix1, matrix2):
@@ -41,11 +47,10 @@ def approximate_sin(x, es, maxit):
     iter = 0
     # Loop until the maximum number of iterations or until the error is less than the allowed error
     while relerror > es and iter < maxit:
-        print(iter)
         old_approximation = approximation
         approximation += ((-1)**iter) * (x**(2*iter+1)) / factorial(2*iter+1)
         if abs(approximation) > 10**-7: # prevent any division by 0.0 (or close value)
-            error = abs((approximation - old_approximation) / approximation)
+            relerror = abs((approximation - old_approximation) / approximation)
         iter += 1
 
     return approximation
@@ -60,6 +65,7 @@ v_exact = exact_velocity(cd,m,t,g)
 v_euler = forward_Euler_velocity(cd,m,t,g)
 
 # problem 2, 4 
+plt.figure(0)
 plt.plot(t, v_exact,  color = "darkcyan", markerfacecolor = "lightskyblue",marker = "o", markersize = 3.5, label = "Exact Velocity")
 plt.plot(t, v_euler,  color = "red", markerfacecolor = "lightcoral", marker = "o", markersize = 3.5, label = "Euler-Calculuated Velocity")
 plt.title("Velocity vs. Time")
@@ -69,6 +75,24 @@ plt.legend([f"Exact Velocity of Object\n(mass = {m} kg and drag coefficient = {c
 plt.grid()
 plt.show()
 plt.savefig("HW1P4.png")
+
+
+# problem 5
+rmse = []
+step_sizes = [.0625,.125,.25,.5,1,2]
+max_time = 12
+for dt in step_sizes:
+    rmse+=[root_mean_square_error(max_time,dt,cd,m,t,g)]
+plt.figure(1)
+plt.plot(step_sizes, rmse,  color = "darkgreen", markerfacecolor = "darkorange",marker = "o", markersize = 5, label = "Exact Velocity")
+plt.title("Root Mean Square Error (RMSE) vs. Time Step Size")
+plt.xlabel("Time (s)") # assumed to be in seconds
+plt.ylabel("RMSE (m/s)") # assumed to be in meters per second
+plt.legend([f"Root Mean Square Error for Euler-Calculated Velocity\n(mass = {m} kg and drag coefficient = {cd})"])
+plt.grid()
+plt.show()
+plt.savefig("HW1P5.png")
+
 
 # bonus, part1
 rng = np.random.default_rng(12345)
@@ -85,4 +109,4 @@ print("actual", actual)
 print("No difference between matrixes: ", np.allclose(explicit, actual))
 
 # bonus, part2
-print(approximate_sin(pi/2, .01, 2))
+print("approximate sin value:", approximate_sin(pi, .0001, 5))
