@@ -64,8 +64,26 @@ v_exact = exact_velocity(cd,m,t,g)
 # problem 3
 v_euler = forward_Euler_velocity(cd,m,t,g)
 
-# problem 2, 4 
+# problem 2
 plt.figure(0)
+plt.plot(t, v_exact,
+           color = "darkcyan",
+           markerfacecolor = "lightskyblue",
+           marker = "o", markersize = 3.5,
+           label = "Exact Velocity")
+plt.title("Velocity vs. Time")
+plt.xlabel("Time (s)") # assumed seconds
+plt.ylabel("Velocity (m/s)") # assumed meters/second
+plt.legend([f"Exact Velocity of Object\n
+            (mass = {m} kg and 
+            drag coefficient = {cd})"])
+plt.grid()
+plt.show()
+plt.savefig("HW1P2.png")
+
+
+# problem 4 
+plt.figure(1)
 plt.plot(t, v_exact,  color = "darkcyan", markerfacecolor = "lightskyblue",marker = "o", markersize = 3.5, label = "Exact Velocity")
 plt.plot(t, v_euler,  color = "red", markerfacecolor = "lightcoral", marker = "o", markersize = 3.5, label = "Euler-Calculuated Velocity")
 plt.title("Velocity vs. Time")
@@ -83,12 +101,17 @@ step_sizes = [.0625,.125,.25,.5,1,2]
 max_time = 12
 for dt in step_sizes:
     rmse+=[root_mean_square_error(max_time,dt,cd,m,t,g)]
-plt.figure(1)
-plt.plot(step_sizes, rmse,  color = "darkgreen", markerfacecolor = "darkorange",marker = "o", markersize = 5, label = "Exact Velocity")
+plt.figure(2)
+plt.plot(step_sizes, rmse,
+           color = "darkgreen", 
+           markerfacecolor = "darkorange",
+           marker = "o", markersize = 5, 
+           label = "Exact Velocity")
 plt.title("Root Mean Square Error (RMSE) vs. Time Step Size")
 plt.xlabel("Time (s)") # assumed to be in seconds
 plt.ylabel("RMSE (m/s)") # assumed to be in meters per second
-plt.legend([f"Root Mean Square Error for Euler-Calculated Velocity\n(mass = {m} kg and drag coefficient = {cd})"])
+plt.legend([f"Root Mean Square Error for Euler-Calculated Velocity
+            \n(mass = {m} kg and drag coefficient = {cd})"])
 plt.grid()
 plt.show()
 plt.savefig("HW1P5.png")
