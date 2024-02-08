@@ -45,27 +45,6 @@ def forward_Euler_velocity(cd:float, m:float, t:List[float], g:float)->list:
         stepNo+=1
     return np.array(v)
 
-# problem 5
-def root_mean_square_error(maxt:float, dt:float, cd:float, m:float, g:float) -> float:
-    """
-    Calculates the root mean square error of the velocity at any given time point.
-    Args:
-        float maxt: the maximum time to be calculated.
-        float dt: the step size or delta time interval between velocity re-calculations.
-        float cd: drag coefficient
-        float m: mass of the object 
-        float g: gravitational constant
-    Returns:
-        float rmse: the root mean square error of the velocities of the data sample. The data sample is defined\
-        as all the times between 0 and maxt with the delta t as dt.         
-    """ 
-    tsteps = int(maxt/dt) + 1 # the total number of time instances where to calculate velocity
-    t = np.linspace(0,maxt, tsteps) # each time spot
-    # the difference between the exact and approximated velocities at the times listed in t
-    dv = np.array(exact_velocity(cd, m, t, g) - forward_Euler_velocity(cd, m, t, g)) 
-    rmse = sqrt(np.sum(dv**2)/tsteps) # compute the quadrature of dv over the number of time steps
-    return rmse
-
 # bonus, part1
 def mat_mat_mul(matrix1, matrix2):
     """
@@ -91,6 +70,7 @@ def mat_mat_mul(matrix1, matrix2):
                 result[i][j] += matrix1[i][k] * matrix2[k][j]
     return result
 
+# bonus, part 2
 def approximate_sin(x:float, es:float, maxit:int) -> float:
     """
     Function uses the Maclaurin series to estimate sin(x), where x is a particular value in radians.
@@ -114,92 +94,3 @@ def approximate_sin(x:float, es:float, maxit:int) -> float:
             relerror = abs((approximation - old_approximation) / approximation)
         iter += 1 # update iteration number
     return approximation
-
-# uncomment following lines for test cases
-
-"""
-# problem 1 
-t = np.linspace(0,12,25)
-cd = .25
-m = 68.1
-g = 9.81
-v_exact = exact_velocity(cd,m,t,g)
-
-# problem 3
-v_euler = forward_Euler_velocity(cd,m,t,g)
-
-# problem 2
-plt.figure(0)
-plt.plot(t, v_exact,
-           color = "darkcyan",
-           markerfacecolor = "lightskyblue",
-           marker = "o", markersize = 3.5,
-           label = "Exact Velocity")
-plt.title("Velocity vs. Time")
-plt.xlabel("Time (s)") # assumed seconds
-plt.ylabel("Velocity (m/s)") # assumed meters/second
-plt.legend([f"Exact Velocity of Object\n(mass = {m} kg and drag coefficient = {cd})"])
-plt.grid()
-plt.show()
-plt.savefig("HW1P2.png")
-
-# problem 4 
-plt.figure(1)
-plt.plot(t, v_exact,  
-         color = "darkcyan", 
-         markerfacecolor = "lightskyblue",
-         marker = "o", markersize = 3.5, 
-         label = "Exact Velocity")
-plt.plot(t, v_euler, 
-          color = "red", 
-          markerfacecolor = "lightcoral", 
-          marker = "o", markersize = 3.5,
-          label = "Euler-Calculuated Velocity")
-plt.title("Velocity vs. Time")
-plt.xlabel("Time (s)") # assumed to be in seconds
-plt.ylabel("Velocity (m/s)") # assumed to be in meters per second
-plt.legend([f"Exact Velocity of Object \
-            \n (mass = {m} kg and drag coefficient = {cd})", f"Euler-Calculated Velocity of Object\
-            \n(mass = {m} kg and drag coefficient = {cd})"])
-plt.grid()
-plt.show()
-plt.savefig("HW1P4.png")
-
-# problem 5
-rmse = []
-step_sizes = [.0625,.125,.25,.5,1,2]
-max_time = 12
-for dt in step_sizes:
-    rmse+=[root_mean_square_error(max_time,dt,cd,m,g)]
-plt.figure(2)
-plt.plot(step_sizes, rmse,
-           color = "darkgreen", 
-           markerfacecolor = "darkorange",
-           marker = "o", markersize = 5, 
-           label = "Exact Velocity")
-plt.title("Root Mean Square Error (RMSE) vs. Time Step Size")
-plt.xlabel("Time (s)") # assumed to be in seconds
-plt.ylabel("RMSE (m/s)") # assumed to be in meters per second
-plt.legend([f"Root Mean Square Error for Euler-Calculated Velocity \
-            \n(mass = {m} kg and drag coefficient = {cd})"])
-plt.grid()
-plt.show()
-plt.savefig("HW1P5.png")
-
-# bonus, part1
-rng = np.random.default_rng(12345)
-rints = rng.integers(low=0, high=10, size=2)
-
-matrix1_rows, matrix2_rows = (rints) # rows of matrix 1 are columns in matrix 2; rows of matrix 2 are columns in matrix 1
-matrix1 = np.random.rand(matrix1_rows,matrix2_rows)
-matrix2 = np.random.rand(matrix2_rows,matrix1_rows)
-
-explicit = mat_mat_mul(matrix1,matrix2)
-actual = matrix1@matrix2
-# print("mat_mat_mul", explicit)
-# print("actual", actual)
-# print("No difference between matrixes: ", np.allclose(explicit, actual))
-
-# bonus, part2
-# print("approximate sin value:", approximate_sin(pi, .0001, 5))
-"""
