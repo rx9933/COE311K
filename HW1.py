@@ -2,15 +2,14 @@ from matplotlib import pyplot as plt
 from math import sqrt, tanh, factorial, pi
 import numpy as np
 from typing import List
-
 # problem 1
-def exact_velocity(cd:float, m:float, t:List[float], g:float)->list:
+def exact_velocity(c_d:float, m:float, t:List[float], g:float)->list:
     """
     Calculates the exact velocity of an object of mass m at the times listed in t. 
     Uses the solution to the differential equation (DE) model of the velocity of a falling object subject to the forces of gravity and wind drag.
     All units are assumed to be of the same scale (i.e, SI units are assumed).
     Args:
-        float cd: drag coefficient
+        float c_d: drag coefficient
         float m: mass of the object 
         vector/List[float] t: a vector of times the user wants to compute the velocity at
         float g: gravitational constant 
@@ -19,17 +18,17 @@ def exact_velocity(cd:float, m:float, t:List[float], g:float)->list:
     """
     v = np.zeros(len(t)) # initialize velocity
     for timeindex, timevalue in enumerate(t): # loop over each time 
-        v[timeindex] = sqrt(g*m/cd)*tanh(sqrt(g*cd/m)*timevalue) 
+        v[timeindex] = sqrt(g*m/c_d)*tanh(sqrt(g*c_d/m)*timevalue) 
     return np.array(v)
 
 # problem 3
-def forward_Euler_velocity(cd:float, m:float, t:List[float], g:float)->list:
+def forward_Euler_velocity(c_d:float, m:float, t:List[float], g:float)->list:
     """
     Uses forward euler approximation to approximate the time deravative \
         and solve for the velocity of a falling object at the times in t.
         All units are assumed to be of the same scale (i.e, SI units are assumed).
     Args:
-        float cd: drag coefficient
+        float c_d: drag coefficient
         float m: mass of the object 
         vector/List[float] t: a vector of times the user wants to compute the velocity at
         float g: gravitational constant 
@@ -41,33 +40,33 @@ def forward_Euler_velocity(cd:float, m:float, t:List[float], g:float)->list:
     stepNo = 1
     while stepNo < numSteps: # loop through each time step
         dt = t[stepNo]-t[stepNo-1] # delta t
-        v[stepNo] = v[stepNo-1] + dt*(g-cd/m*(v[stepNo-1])**2) # approx of v'
+        v[stepNo] = v[stepNo-1] + dt*(g-c_d/m*(v[stepNo-1])**2) # approx of v'
         stepNo+=1
     return np.array(v)
 
 # bonus, part1
-def mat_mat_mul(matrix1, matrix2):
+def mat_mat_mul(A,B):
     """
     Performs the matrix multiplication betwen two matrixes.
     Args:
-        matrix matrix1: the first matrix
-        matrix matrix2: the second matrix
+        matrix A: the first matrix
+        matrix B: the second matrix
     Returns:
         matrix result: the product of matrix1 and matrix2
         or, int 1: an error has occured
     """
     # Check that dimensions match (num cols of first matrix = num rows of second matrix)
-    if np.shape(matrix1)[1]!= np.shape(matrix2)[0] :
+    if np.shape(A)[1]!= np.shape(B)[0] :
         print("Incorrect matrix sizes. Cannot multiply.")
         return 1
 
     # Initialize result matrix with zeros
-    result = np.zeros((matrix1.shape[0], matrix2.shape[1])) # shape should be rows of first matrix and columns of second matrix
+    result = np.zeros((A.shape[0], B.shape[1])) # shape should be rows of first matrix and columns of second matrix
     # Perform matrix multiplication
-    for i in range(len(matrix1)):
-        for j in range(len(matrix2[0])):
-            for k in range(len(matrix2)):
-                result[i][j] += matrix1[i][k] * matrix2[k][j]
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                result[i][j] += A[i][k] * B[k][j]
     return result
 
 # bonus, part 2
@@ -94,3 +93,4 @@ def approximate_sin(x:float, es:float, maxit:int) -> float:
             relerror = abs((approximation - old_approximation) / approximation)
         iter += 1 # update iteration number
     return approximation
+
