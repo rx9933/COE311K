@@ -41,7 +41,6 @@ def solve_LU(L,U,b):
     nrows = len(b)
     for r in range(nrows-1, -1, -1):
         x[r] = (d[r] - np.dot(U[r,r+1:], x[r+1:]))/U[r,r]
-    print("x", x)
     return x
 
 # PROBLEM 7
@@ -57,9 +56,10 @@ print(np.linalg.solve(U, d))
 
 solve_LU(L,U,b)
 """
+"""
 # PROBLEM 1
 L = np.array([[1, 0, 0], [2/3, 1, 0], [-1/3, -4/11, 1]])
-U = np.array([[3, -2, 1], [0, -22/3, -14/3], [0, 0, 40/11]]) b 
+U = np.array([[3, -2, 1], [0, -22/3, -14/3], [0, 0, 40/11]]) 
 b = np.array([-10,44,-26])
 print(solve_LU(L,U,b))
 print(np.linalg.solve(np.matmul(L,U),b))
@@ -68,3 +68,19 @@ print(np.linalg.solve(np.matmul(L,U),b))
 A= np.array([[8,2,1],[3,7,2],[2,3,9]])
 L,U = naive_LU(A)
 print(L)
+"""
+# PROBLEM 3
+A = np.array([[10,2,-1],[-3,-6,2],[1,1,5]])
+L,U = naive_LU(A)
+
+# print(L)
+# print(U)
+# print(np.matmul(np.array([[1,0,0],[-3/10,1,0],[1/10,-4/27,1]]), np.array([[10,2,-1],[0,-5.4,1.7],[0,0,289/54]])))
+# print(np.matmul(np.array([[1,0,0],[-3/10,1,0],[1/10,-4/27,1]]), np.array([[10,2,-1],[0,-5.4,1.7],[0,0,289/54]])))
+
+# PROBLEM 4
+b = np.array([27,-61.5,-21.5])
+print(solve_LU(L,U, b))
+
+b = np.array([12,18,-6])
+print(solve_LU(L,U, b))
