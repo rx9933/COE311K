@@ -14,4 +14,3 @@ def test_solve_LU():
 
     b = np.array([-23,4,-26])
     assert(np.allclose(solve_LU(L,U,b), np.linalg.solve(np.matmul(L,U),b)))
-test_solve_LU()

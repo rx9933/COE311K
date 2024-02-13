@@ -43,6 +43,21 @@ def solve_LU(L,U,b):
         x[r] = (d[r] - np.dot(U[r,r+1:], x[r+1:]))/U[r,r]
     return x
 
+# BONUS, Part 1
+def my_Cholesky(A):
+    shape = A.shape
+    if shape[0]!=shape[1]:
+        print("input is not a square matrix")
+        return 1
+    if A.T != A: # is symmetric
+        print("input is a square but not a symmetric matrix")
+        return 1
+    
+    
+
+
+
+
 # PROBLEM 7
 """
 L = np.array([[1, 0, 0], [2, 1, 0], [3, 4, 1]])
