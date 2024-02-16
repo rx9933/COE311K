@@ -43,29 +43,29 @@ def solve_LU(L,U,b):
         x[r] = (d[r] - np.dot(U[r,r+1:], x[r+1:]))/U[r,r]
     return x
 
+# PROBLEM 11
+def inv_using_naive_LU(A):
+    L,U = naive_LU(A)
+    maxc = np.shape(A)[0]
+    I = np.identity(maxc)
+    Ainv = np.zeros((maxc,maxc))
+    for c in range (np.shape(A)[0]):
+        Ainv[:,c] = solve_LU(L,U,I[:,c])
+    return Ainv
+
+# PROBLEM 12
+def Richardson_it(A, b, w, e, max_it):
+    x_current = np.zeros(A.shape[1])
+    num_it = 0 
+    error = e + 1 # ensure starting error greate than minimum error always
+    while (num_it == 0 or error > e)  and num_it <max_it:
+        x_next = x_current + w * (b-np.dot(A, x_current))
+        error = np.linalg.norm(np.dot(A, x_current) - b)
+        x_current = x_next
+        num_it+=1
+    return x_current
+
 # BONUS, Part 1
-# def my_Cholesky(A):
-#     shape = A.shape
-#     if shape[0]!=shape[1]:
-#         print("input is not a square matrix")
-#         return 1
-#     if A.T.any() != A.any(): # is symmetric
-#         print("input is a square but not a symmetric matrix")
-#         return 1
-    # U = np.zeros(shape)
-    # for i in range(shape[0]):
-    #     for j in range(i+1, shape[0]):
-    #         sum = 0
-    #         for k in range(i-1):
-    #             sum += U[k,i] * U[k,j]
-    #         U[i,j] = A[i,j] - sum
-    # for i in range(shape[0]): # each row
-    #     # along diagonal
-    #     ukisq = 0
-    #     for k in range(1, i-1):
-    #         ukisq += U[k,i]**2
-    #     U[i,i] = sqrt(A[i,i]-ukisq)
-    # print(U.T)
 def my_Cholesky(A):
     shape = A.shape
     if shape[0] != shape[1]:
@@ -87,6 +87,27 @@ def my_Cholesky(A):
                 # Non-diagonal elements
                 U[i, j] = (A[i, j] - np.sum(U[:i, i] * U[:i, j])) / U[i, i]
     return U
+
+# BONUS, Part 2
+def my_GaussSiedel(A, b, e, nit):
+    n = len(b)  # Dimension of the system
+    x = np.zeros(n)  # Initial guess for solution
+    num_iter = 0
+    error_norm = e + 1 # ensure starting error greate than minimum error always
+    while error_norm > e and num_iter < nit: 
+        x_old = x.copy()  # Store the previous solution
+
+        for i in range(n):
+            # Calculate the new value for x[i]
+            x[i] = (b[i] - np.dot(A[i, :i], x[:i]) - np.dot(A[i, (i+1):], x_old[(i+1):])) / A[i, i]
+
+        # Check for convergence using the error norm
+        error_norm = np.linalg.norm((np.dot(A, x_old) - b), ord = 2)
+
+    num_iter +=1
+
+    return x
+
     
 
 # PROBLEM 7
@@ -125,11 +146,13 @@ L,U = naive_LU(A)
 # print(np.matmul(np.array([[1,0,0],[-3/10,1,0],[1/10,-4/27,1]]), np.array([[10,2,-1],[0,-5.4,1.7],[0,0,289/54]])))
 
 # PROBLEM 4
-# b = np.array([27,-61.5,-21.5])
+b = np.array([27,-61.5,-21.5])
 # print(solve_LU(L,U, b))
+# print("A", np.linalg.solve(A,b))
 
-# b = np.array([12,18,-6])
+b = np.array([12,18,-6])
 # print(solve_LU(L,U, b))
+# print("A", np.linalg.solve(A,b))
 
 # PROBLEM 5
 A = np.array([[2,-6,-1],[-3,-1,7],[-8,1,-2]])
@@ -156,5 +179,67 @@ U = np.array([[-8,1,-2], [0, -23/4, -3/2], [0,0,373/46]])
 # BONUS p.1
 # A = np.array([[4, 12, -16],[12, 37, -43], [-16, -43, 98]])
 A = np.array([[6, 15, 55], [15, 55, 225], [55, 225, 979]])
-print(my_Cholesky(A))
-print(np.linalg.cholesky(A).T) # RETURNS L
+# print(my_Cholesky(A))
+# print(np.linalg.cholesky(A).T) # RETURNS L
+
+# PROBLEM 8
+F = np.array([[10, 2, - 1], [-3, -6, 2], [1,1,5]])
+b = np.array([27, -61.5, -21.5])
+# print(np.linalg.inv(F))
+# print(np.linalg.solve(F, b))
+
+# PROBLEM 9
+L = np.array([[1,0,0],[-.25, 1, 0], [.375, 11/46, 1]])
+U = np.array([[-8, 1, -2], [0, -5.75, -1.5], [0, 0, 373/46]])
+# print(np.matmul(L,U))
+A = np.array([[-8, 1, -2], [2, -6, -1], [-3, -1, 7]])
+p,l,u = lu(A)
+# print(l)
+# print(u)
+# print(np.linalg.inv(A))
+b = np.array([-20, -38, -34])
+# print(np.linalg.solve(A,b))
+
+# PROBLEM 10
+A = np.array([[8, 2, -10], [-9, 1, 3], [15, -1, 6]])
+ 
+A = np.array([[2,7], [3,4], [6,5]])
+
+A = np.array([[5,4,3], [11, 10, 8]])
+# print(np.linalg.norm(A))
+# print(np.linalg.norm(A, ord=1))
+# print(np.linalg.norm(A, ord=np.inf))
+
+# PROBLEM 11
+A = np.array([[8, 2, -10], [-9, 1, 3], [15, -1, 6]])
+Ainv = inv_using_naive_LU(A) 
+# print(Ainv)
+# print(np.linalg.inv(A))
+assert(np.allclose(Ainv, np.linalg.inv(A)))
+
+# PROBLEM 12
+b = np.array([-2, 3,8])
+w = .01
+I = np.identity(A.shape[1])
+
+A = np.random.rand(3, 3)
+w = 1
+I = np.eye(3)
+iteration_matrix = I - w * A
+spectral_radius = np.linalg.norm(iteration_matrix, ord=2)
+while spectral_radius >= 1:
+    A = np.random.rand(3, 3)
+    iteration_matrix = I - w * A
+    spectral_radius = np.linalg.norm(iteration_matrix, ord=2)
+# print("Matrix A:")
+# print(A)
+# print(np.linalg.norm(I-w*A, ord =  2))
+
+# print(Richardson_it(A, b, w, .1, 890))
+# print(np.linalg.solve(A,b))
+
+# BONUS part 2
+nit=100
+e = .1
+print(my_GaussSiedel(A, b, e, nit))
+print(np.linalg.solve(A,b))
