@@ -108,6 +108,26 @@ def my_GaussSiedel(A, b, e, nit):
 
     return x
 
+# PROBLEM 15
+def largest_eig(A, e, max_it):
+    error = e + 1 # ensure error is initialized to be greater than cut-off
+    aShape = A.shape
+    if aShape[0] != aShape[1]:
+        print("not a square matrix!")
+        return None
+    x = np.ones(aShape[0])
+    lamda_prev = 1.0
+    n_it = 0
+    while error > e and n_it < max_it:
+        Ax = np.matmul(A, x)
+        lamda = max(abs(Ax))
+
+        x = Ax/lamda
+        print("x",x)
+        error = abs((lamda -lamda_prev)/lamda)
+        lamda_prev = lamda
+        n_it +=1
+    return lamda, x, n_it, error 
     
 
 # PROBLEM 7
@@ -237,6 +257,17 @@ while spectral_radius >= 1:
 
 # print(Richardson_it(A, b, w, .1, 890))
 # print(np.linalg.solve(A,b))
+
+
+
+# def largest_eig(A, e, max_it):
+#     return lamda, x, n_it, error 
+# PROBLEM 15
+A = np.array([[40, -20, 0], [-20, 40, -20], [0, -20, 40]])
+print(largest_eig(A, .00001, 30))
+print("A",np.linalg.eig(A))
+
+
 
 # BONUS part 2
 nit=100
