@@ -262,15 +262,27 @@ while spectral_radius >= 1:
 
 # def largest_eig(A, e, max_it):
 #     return lamda, x, n_it, error 
+# PROBLEM 13
+A = np.array([[2,8,10], [8, 4, 5], [10, 5, 7]])
+print(largest_eig(A, .004, 3))
+
+# PROBLEM 14
+# print(np.linalg.eig(A))
 # PROBLEM 15
 A = np.array([[40, -20, 0], [-20, 40, -20], [0, -20, 40]])
-print(largest_eig(A, .00001, 30))
-print("A",np.linalg.eig(A))
+# print(largest_eig(A, .00001, 30))
+# print("A",np.linalg.eig(A))
 
 
+
+# PROBLEM 14
+A = np.array([[2, 8, 10], [8, 4, 5], [10, 5, 7]], dtype=float)
+# print("inv", np.linalg.inv(A))
+print("AA",largest_eig(np.linalg.inv(A), .000001, 30))
+print(np.linalg.eig(A))
 
 # BONUS part 2
 nit=100
 e = .1
-print(my_GaussSiedel(A, b, e, nit))
-print(np.linalg.solve(A,b))
+# print(my_GaussSiedel(A, b, e, nit))
+# print(np.linalg.solve(A,b))
