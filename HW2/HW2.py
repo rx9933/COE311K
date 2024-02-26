@@ -51,10 +51,10 @@ def inv_using_naive_LU(A):
         return error
     maxc = np.shape(A)[0]
     I = np.identity(maxc)
-    Ainv = np.zeros((maxc,maxc))
+    A_inv = np.zeros((maxc,maxc))
     for c in range (np.shape(A)[0]):
-        Ainv[:,c] = solve_LU(L,U,I[:,c])
-    return Ainv
+        A_inv[:,c] = solve_LU(L,U,I[:,c])
+    return A_inv
 
 # PROBLEM 12
 def Richardson_it(A, b, omega, tol, max_it):
