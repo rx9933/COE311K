@@ -41,6 +41,9 @@ def inv_using_naive_LU(A):
     except ValueError:
         #print("not a square matrix or otherwise incorrect input")
         return error
+    if np.linalg.matrix_rank(A) !=A.shape[0]:
+        #print("not an invertable matrix")
+        return error
     maxc = np.shape(A)[0]
     I = np.identity(maxc)
     Ainv = np.zeros((maxc,maxc))
@@ -129,3 +132,7 @@ def my_Gauss_Siedel(A, b, tol, max_it):
         error_norm = np.linalg.norm((np.dot(A, x) - b), ord = 2)
     num_iter +=1
     return x
+A = np.array([[1,2,1],[2,3,4],[3,5,5]])
+print(inv_using_naive_LU(A))
+
+print(np.linalg.inv(A))
