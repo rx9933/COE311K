@@ -50,6 +50,10 @@ def inv_using_naive_LU(A):
 
 # PROBLEM 12
 def Richardson_it(A, b, omega, tol, max_it):
+    shap = A.shape
+    if shap[0] != shap[1]:
+        # print("A shape is not square")
+        return error
     I = np.identity(A.shape[0])
     iteration_matrix = I - omega * A
     spectral_radius = np.linalg.norm(iteration_matrix, ord=2)
@@ -126,3 +130,4 @@ def my_GaussSiedel(A, b, tol, max_it):
     num_iter +=1
     return x
 
+print(Richardson_it(np.array([[1,2,3]]), [1,2,3], .1, .01, 100))
