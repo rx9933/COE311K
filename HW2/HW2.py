@@ -187,7 +187,7 @@ A = np.array([[1,2,3],[4,5,6],[7,8,9]])
 l,u =naive_LU(A)
 print(np.matmul(l,u))
 
-'''
+
 # PROBLEM 7
 
 L = np.array([[1, 0, 0], [2, 1, 0], [3, 4, 1]])
@@ -200,12 +200,18 @@ d =np.linalg.solve(A, b)
 # print(np.linalg.solve(U, d))
 
 solve_LU(L,U,b)
+L = np.array([[1, 0, 0], [2, 1, 0], [3, 4, 1]])
+U = np.array([[1, 2, 3], [0, 1, 4], [0, 0, 1]])
+print(solve_LU(L,U,b))
+print(np.linalg.solve(np.matmul(L,U),b))
 '''
 # PROBLEM 8
 F = np.array([[10, 2, - 1], [-3, -6, 2], [1,1,5]])
 b = np.array([27, -61.5, -21.5])
-# print(np.linalg.inv(F))
-# print(np.linalg.solve(F, b))
+
+print(np.linalg.inv(F))
+print(np.linalg.solve(F, b))
+
 
 # PROBLEM 9
 L = np.array([[1,0,0],[-.25, 1, 0], [.375, 11/46, 1]])
@@ -218,7 +224,7 @@ p,l,u = lu(A)
 # print(np.linalg.inv(A))
 b = np.array([-20, -38, -34])
 # print(np.linalg.solve(A,b))
-
+'''
 # PROBLEM 10
 A = np.array([[8, 2, -10], [-9, 1, 3], [15, -1, 6]])
  
@@ -261,7 +267,7 @@ while spectral_radius >= 1:
 
 # PROBLEM 13
 A = np.array([[2,8,10], [8, 4, 5], [10, 5, 7]])
-print(largest_eig(A, .004, 3))
+# print(largest_eig(A, .004, 3))
 
 # PROBLEM 14
 # print(np.linalg.eig(A))
@@ -275,8 +281,8 @@ A = np.array([[40, -20, 0], [-20, 40, -20], [0, -20, 40]])
 # PROBLEM 14
 A = np.array([[2, 8, 10], [8, 4, 5], [10, 5, 7]], dtype=float)
 # print("inv", np.linalg.inv(A))
-print("AA",largest_eig(np.linalg.inv(A), .000001, 30))
-print(np.linalg.eig(A))
+# print("AA",largest_eig(np.linalg.inv(A), .000001, 30))
+# print(np.linalg.eig(A))
 
 
 
@@ -292,4 +298,11 @@ nit=100
 e = .1
 # print(my_GaussSiedel(A, b, e, nit))
 # print(np.linalg.solve(A,b))
+<<<<<<< HEAD
 '''
+
+
+A = np.array([[3, -2, 1],[2, 6, -4],[-1, -2, 5]])
+b = [-10, 44, -26]
+L,U = naive_LU(A)
+# print(solve_LU(L,U, b))
