@@ -23,6 +23,11 @@ def naive_LU(A):
 
 # PROBLEM 7
 def solve_LU(L,U,b):
+    Lshape = L.shape
+    Ushape = U.shape
+    if not(Lshape[0]==Lshape[1] and Ushape[0]==Ushape[1] and Lshape[0] == Ushape[1] and len(b) == Ushape[1]):
+        #print("wrong matrix input shapes")
+        return error
     # solve Ld = b for b
     d = np.zeros(len(b))
     x = np.copy(d)
@@ -132,7 +137,3 @@ def my_Gauss_Siedel(A, b, tol, max_it):
         error_norm = np.linalg.norm((np.dot(A, x) - b), ord = 2)
     num_iter +=1
     return x
-A = np.array([[1,2,1],[2,3,4],[3,5,5]])
-print(inv_using_naive_LU(A))
-
-print(np.linalg.inv(A))
