@@ -115,7 +115,7 @@ def my_Cholesky(A):
     return U
 
 # BONUS, Part 2
-def my_GaussSiedel(A, b, tol, max_it):
+def my_Gauss_Siedel(A, b, tol, max_it):
     n = len(b)  # Dimension of the system
     x = np.zeros(n)  # Initial guess for solution
     num_iter = 0
@@ -129,5 +129,3 @@ def my_GaussSiedel(A, b, tol, max_it):
         error_norm = np.linalg.norm((np.dot(A, x) - b), ord = 2)
     num_iter +=1
     return x
-
-print(Richardson_it(np.array([[1,2,3]]), [1,2,3], .1, .01, 100))
