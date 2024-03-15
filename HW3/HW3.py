@@ -1,6 +1,4 @@
 import numpy as np
-from scipy import fft
-import matplotlib.pyplot as plt
 error = "error"
 
 # Problem 2
@@ -12,7 +10,7 @@ def least_squares_poly(x,y,k):
 
     Z = np.zeros((m,n))
     for j in range(n): # col
-        Z [:,j] = x**j
+        Z [:,j] = np.power(x,j)
     a = np.linalg.solve(np.matmul(Z.T,Z),np.matmul(Z.T,y))
     return a
    
@@ -88,5 +86,3 @@ def my_poly_interp(x, fx, xi, ptype):
         return interpolated_value
     else:
         return error
-
-
