@@ -8,9 +8,10 @@ def least_squares_poly(x,y,k):
     if (len(x) != len(y)):
         return error
 
-    Z = np.zeros((m,n))
-    for j in range(n): # col
+    Z = np.zeros((m,n+1))
+    for j in range(n+1): # col
         Z [:,j] = np.power(x,j)
+        # Z[:,j] = x ** j
     a = np.linalg.solve(np.matmul(Z.T,Z),np.matmul(Z.T,y))
     return a
    
