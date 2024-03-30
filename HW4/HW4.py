@@ -31,11 +31,7 @@ def my_linear_interpolation(x,fx,xi):
     yi = y1 + slope*dx
     return yi
 
-# Problem 1 Test
-x = [2, 3, 45, 1]
-fx = [4, 10, 90, 2]
-# print(my_linear_interpolation(x,fx,7))
-
+# Problem 2
 def my_cubic_spline_interpolation(x,fx,xi):
     '''
     Takes in x - input data
@@ -117,59 +113,63 @@ def my_cubic_spline_interpolation(x,fx,xi):
 
     # Solve for r
     r = np.linalg.solve(A,s)
-    # print(r)
-       # Find the values of a that are above and below xi
-    fxi = []
-    for interp in xi:
-        x1 = max(filter(lambda x: x <= interp, x))
-        x2 = min(filter(lambda x: x > interp, x))
 
-        # Get the corresponding values of b
+    fxi = [] # return list that will include all the corresponding y values for xi.
+    for interp in xi:
+        x1 = max(filter(lambda x: x <= interp, x)) # upper limit for xi
+        x2 = min(filter(lambda x: x > interp, x)) # lower limit for xi
+
+        # Get the corresponding values of y
         y1 = fx[x.index(x1)]
         y2 = fx[x.index(x2)]
         i= np.where(np.isclose(x, x1)) # array of index of lower x point
-        i = int(max(i))
+        index = int(i[0][0]) # i is an array with one list (of length 1) as its value.
 
         # spline number i+1 
-        val = a[i] +  r[3*i] * (interp-x1) + r[3*i+1] * (interp-x1)**2 + r[3*i+2] * (interp-x1)**3
-        fxi+=[val]
+        val = a[index] +  r[3*index] * (interp-x1) + r[3*index+1] * (interp-x1)**2 + r[3*index+2] * (interp-x1)**3
+        fxi+=[val] # append fx(xi) to list fxi
     return fxi
 
-
-
-x = [1, 2, 3, 4]
-fx = [1, 8, 27, 64]
-xi = [1.2, 2.4, 2.5]    
-
-print("calculated value", my_cubic_spline_interpolation(x,fx,xi))
-from scipy.interpolate import CubicSpline
-import scipy.interpolate
-cs = CubicSpline(x, fx)
-print("interp val, splined scipy",cs(xi))
-print("actual", np.array(xi)**3)
-
-
-
-
+# Problem 3
 def my_bisection_method(f,a,b,tol,maxit):
-	'''
+    '''
     Takes in f - a possibly nonlinear function of a single variable
     a - the lower bound of the search interval
-	b - the upper bound of the search interval
-	tol - allowed relative tolerance
-	maxit - allowed number of iteraions
+    b - the upper bound of the search interval
+    tol - allowed relative tolerance
+    maxit - allowed number of iteraions
 
     return root,fx,ea,nit
-	root - the final estimate for location of the root
-	fx - the estimated values for f at the root (will be near 0 if we are close to the root)
-	ea - the final relative error
-	nit - the number of iterations taken
-	
-	return error if the sign of f(a) is the same as the sign of f(b) since this means it is possible
-	that a root doesnt lie in the interval
-    '''
-	return root,fx,ea,nit
+    root - the final estimate for location of the root
+    fx - the estimated values for f at the root (will be near 0 if we are close to the root)
+    ea - the final relative error
+    nit - the number of iterations taken
 
+    return error if the sign of f(a) is the same as the sign of f(b) since this means it is possible
+    that a root doesnt lie in the interval
+    '''
+    if np.sign(f(a))==np.sign(f(b)): 
+        # intermediate value theorem does not apply
+        return error
+    
+    num_it = 0
+    m_old = a # arbitrary initialization; we know this to be an extreme case
+    error = tol + 1 # arbitrary initialization for error to be greater than tolerance
+    while error > tol and num_it < maxit: # 
+        m = 1/2*(a+b) # midpoint
+        if np.sign(f(m))==np.sign(f(a)):
+            a = m
+        else: # np.sign(f(m))==np.sign(f(b))
+            b = m
+        if num_it==0:
+            pass
+        else: # only calculate error after one iteration
+            error =  abs((m-m_old)/m)
+        m_old = m 
+        num_it +=1
+    return m, f(m), error, num_it
+
+# Problem 4
 def modified_secant_method(f,x0,tol,maxit,delta):
     '''
 	Takes in f - a possibly nonlinear function of a single variable
@@ -186,3 +186,101 @@ def modified_secant_method(f,x0,tol,maxit,delta):
 	
 	no error checking is necessary in this case
 	'''
+    num_it = 0
+    error = tol + 1 # arbitrary initialization for error to be greater than togut commit -m "tangent/second methods"
+    
+    while error > tol and num_it < maxit: # 
+        fderiv = (f(x0 + delta*x0) - f(x0))/ (delta*x0)
+        x_new = x0 - f(x0)/fderiv
+        error = abs((x_new-x0)/x_new)
+        num_it +=1
+        x0 = x_new
+    return x_new, f(x_new), error, num_it
+
+# Problem 1 Test
+'''
+x = [2, 3, 45, 1]
+fx = [4, 10, 90, 2]
+# print(my_linear_interpolation(x,fx,7))
+'''
+
+
+# Problem 2 Test
+'''
+# x = [1, 2, 3, 4]
+# fx = [1, 8, 27, 64]
+# xi = [1.2, 2.4, 2.5]    
+
+# x = [0,1,2]
+# fx = [1,3,2]
+# xi = [.5,1.5]
+
+x1 = 0
+x2 = 2*np.pi
+ndata = 5
+#data we have access to
+x = np.linspace(x1,x2,ndata)
+fx = np.sin(x)
+
+#interpolate at a single point
+xi = [(x1+x2)*.63]
+
+print("calculated value", my_cubic_spline_interpolation(x,fx,xi))
+
+from scipy.interpolate import CubicSpline
+import scipy.interpolate
+cs = CubicSpline(x, fx,bc_type='natural')
+# print(x,f
+
+f_cubic = CubicSpline(x, fx, bc_type='natural')
+
+y_hat_cubic = f_cubic(xi)
+# print(x,y)
+print("a",y_hat_cubic)
+print("interp val, splined scipy",cs(xi))
+print("actual", np.sin(xi))
+
+
+'''
+
+# Problem 3 Test
+'''
+def f(x):
+    return x**2 - 4 + x**3
+a = -1
+b = 3
+tol = 1e-5
+maxit = 100
+
+# root, fx, ea, nit = my_bisection_method(f, a, b, tol, maxit)
+print(my_bisection_method(f, a, b, tol, maxit))
+###
+def f(x):
+    return np.sqrt(9.81*x/.25)*np.tanh(4*np.sqrt(9.81*.25/x)) - 36
+a = 40
+b = 200
+tol = 1e-5
+maxit = 100
+
+root, fx, ea, nit = my_bisection_method(f, a, b, tol, maxit)
+print(my_bisection_method(f, a, b, tol, maxit))
+
+from matplotlib import pyplot as plt
+# import matplotlib
+# matplotlib.use('TkAgg')
+x = np.linspace(40, 200, 100)
+y = f(x)
+plt.plot(x,y)
+plt.plot(root,fx, "ro")
+plt.grid()
+plt.show()
+plt.savefig("ex")
+'''
+
+# Problem 4 Test
+'''
+
+def f(x):
+    return x**2-1
+print(modified_secant_method(f,.1,.01, 100, .00001))
+'''
