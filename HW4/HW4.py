@@ -12,23 +12,28 @@ def my_linear_interpolation(x,fx,xi):
 	
 	return error if any points in xi lie outside the range of x
     '''
-    if max(xi) > max(x) or min(xi) < min(x):
+    # check if any points in xi lie outside the range of x
+    if max(xi) > max(x) or min(xi) < min(x): # checking extremeties of xi vs extremeties of x
           return error
-
-    x_sorted, fx_sorted = zip(*sorted(zip(x, fx)))
-
-    # Find the values of a that are above and below xi
-    x2 = max(filter(lambda x: x <= xi, x_sorted))
-    x1 = min(filter(lambda x: x > xi, x_sorted))
-
-    # Get the corresponding values of b
-    y2 = fx_sorted[x_sorted.index(x2)]
-    y1 = fx_sorted[x_sorted.index(x1)]
-   
-    slope = (y2-y1)/(x2-x1)
-    dx = xi-x1
     
-    yi = y1 + slope*dx
+    yi = [] # initialize an empty list of output values (the values of the function at each point in xi)
+
+    # calculate the function value at each point in xi
+    for interp_point in xi: # interp_point represents a particular xi 
+        # Find the x values that are just above and below interp_point
+        x_upper = max(filter(lambda x: x <= interp_point, x)) # find the closest largest value of x (closest to interp_point)
+        x_lower = min(filter(lambda x: x > interp_point, x)) # find the closest minimum value of x (closest to interp_point)
+
+        # Get the corresponding values of y
+        y_upper = fx[x.index(x_upper)]
+        y_lower = fx[x.index(x_lower)]
+
+        # calculate the slope of a linear interpolation line from x_lower to x_upper
+        slope = (y_upper-y_lower)/(x_upper-x_lower) 
+        dx = interp_point-x_lower # the difference between the interp_point and the lower x point
+        
+        interp_val = y_lower + slope*dx # interp_val-y_lower = slope(xi - x_lower), solve for interp_val
+        yi+=[interp_val] # append the new interp_value to the list of yi outputs
     return yi
 
 # Problem 2
@@ -154,20 +159,26 @@ def my_bisection_method(f,a,b,tol,maxit):
     
     num_it = 0
     m_old = a # arbitrary initialization; we know this to be an extreme case
+    # assume a to be the left boundary and b to be the right boundary
     error = tol + 1 # arbitrary initialization for error to be greater than tolerance
     while error > tol and num_it < maxit: # 
-        m = 1/2*(a+b) # midpoint
-        if np.sign(f(m))==np.sign(f(a)):
-            a = m
+        m = 1/2*(a+b) # midpoint, initial guess of root
+        if np.sign(f(m))==np.sign(f(a)): 
+            a = m # move left boundary closer
         else: # np.sign(f(m))==np.sign(f(b))
-            b = m
-        if num_it==0:
+            b = m # move right boundary closer
+        # calculate error on all iterations (excepting the first iteration)
+        if num_it==0: # first iteration, no previous value of m to calculate relative error with
             pass
         else: # only calculate error after one iteration
-            error =  abs((m-m_old)/m)
-        m_old = m 
-        num_it +=1
-    return m, f(m), error, num_it
+            error = abs((m-m_old)/m) # absolute relative error (kinda) 
+        m_old = m # update midpoint 
+        num_it +=1 # update number of iterations being taken
+    # return the approximation of the root, 
+    # the value of the function at the root (~0),
+    # the error associated with the calculated root, 
+    # and the number of iterations taken to evaluate the root
+    return m, f(m), error, num_it 
 
 # Problem 4
 def modified_secant_method(f,x0,tol,maxit,delta):
@@ -186,23 +197,32 @@ def modified_secant_method(f,x0,tol,maxit,delta):
 	
 	no error checking is necessary in this case
 	'''
-    num_it = 0
-    error = tol + 1 # arbitrary initialization for error to be greater than togut commit -m "tangent/second methods"
-    
-    while error > tol and num_it < maxit: # 
-        fderiv = (f(x0 + delta*x0) - f(x0))/ (delta*x0)
-        x_new = x0 - f(x0)/fderiv
-        error = abs((x_new-x0)/x_new)
-        num_it +=1
-        x0 = x_new
-    return x_new, f(x_new), error, num_it
 
+    num_it = 0 # initialize number of iterations taken in method
+    error = tol + 1 # arbitrary initialization for error to be greater than tolerance 
+    # continue iterations while error exceeds specified tolerance and the number of iterations are within the max limit
+    while error > tol and num_it < maxit: 
+        # approximation for slope/f'(x0)
+        fderiv = (f(x0 + delta*x0) - f(x0))/ (delta*x0)
+        # fderiv*(x_new-x0) = f(x_new) - f(x0); assume f(x_new) = 0 (desired condition), and find x_new
+        x_new = x0 - f(x0)/fderiv
+        error = abs((x_new-x0)/x_new) # absolute relative error, kinda
+        x0 = x_new # update new root estimate
+        num_it +=1 # update number of iterations to solve
+    # return the approximation of the root, 
+    # the value of the function at the root (~0),
+    # the error associated with the calculated root, 
+    # and the number of iterations taken to evaluate the root
+    return x_new, f(x_new), error, num_it 
+
+###########################
 # Problem 1 Test
-'''
-x = [2, 3, 45, 1]
-fx = [4, 10, 90, 2]
-# print(my_linear_interpolation(x,fx,7))
-'''
+
+x = [5, 2, 3, 20, 45, 1]
+fx = [10, 4, 6, 40, 90, 2]
+xi = [3, 7, 15, 1.5]
+print(my_linear_interpolation(x,fx,xi))
+
 
 
 # Problem 2 Test
