@@ -212,4 +212,4 @@ def modified_secant_method(f,x0,tol,maxit,delta):
     # the error associated with the calculated root, 
     # and the number of iterations taken to evaluate the root
     return x_new, f(x_new), error, num_it 
-
+print(my_linear_interpolation([0.,0.5,1. ],[0.,0.25,1.  ],[0.25]))

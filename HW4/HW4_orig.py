@@ -12,27 +12,33 @@ def my_linear_interpolation(x,fx,xi):
 	
 	return error if any points in xi lie outside the range of x
     '''
-    # incorrect input data (w/ corresponding function values)
+    # check that x and fx have same length
     if len(x)!= len(fx):
         return error 
 
-    # any interpolation point is not in range of input x values  
-    if np.any(xi < x[0]) or np.any(xi > x[-1]):
+    # check if any points in xi lie outside the range of x
+    if max(xi) > max(x) or min(xi) < min(x): # checking extremeties of xi vs extremeties of x
         return error
+    
+    fxi = [] # initialize an empty list of output values (the values of the function at each point in xi)
 
-    # initialize arbitrary list of interpolated values. 
-    fxi = np.zeros(len(xi))
-    # for each interpolation point (x value) calculate the y value (fx)
-    for i in range(len(fxi)):
-        index = np.searchsorted(x,xi[i]) # get the position of the element xi in the x
-        if x[index-1]==xi[i]: # check if specific xi is already an element in set of input x
-            fxi[i]=fx[index-1] # no need for calculations
-       # interpolation point is not exactly in input data; need to calculate value
-        else:          
-            x1, x2 = x[index-1], x[index]   # find x1 and x2 (lower and upper boundary)
-            fx1, fx2 = fx[index-1],fx[index] # find respective fx values 
-            fxi[i]=fx1+(fx2-fx1)*(xi[i]-x1)/(x2-x1) # employ a linear interpolation
-    return fxi # return the list of interpolated values
+    # calculate the function value at each point in xi
+    for interp_point in xi: # interp_point represents a particular xi 
+        # Find the x values that are just above and below interp_point
+        x_upper = max(filter(lambda x: x <= interp_point, x)) # find the closest largest value of x (closest to interp_point)
+        x_lower = min(filter(lambda x: x > interp_point, x)) # find the closest minimum value of x (closest to interp_point)
+
+        # Get the corresponding values of y
+        y_upper = fx[x.index(x_upper)]
+        y_lower = fx[x.index(x_lower)]
+
+        # calculate the slope of a linear interpolation line from x_lower to x_upper
+        slope = (y_upper-y_lower)/(x_upper-x_lower) 
+        dx = interp_point-x_lower # the difference between the interp_point and the lower x point
+        
+        interp_val = y_lower + slope*dx # interp_val-y_lower = slope(xi - x_lower), solve for interp_val
+        fxi+=[interp_val] # append the new interp_value to the list of fxi outputs
+    return fxi
 
 # Problem 2
 def my_cubic_spline_interpolation(x,fx,xi):
@@ -212,4 +218,6 @@ def modified_secant_method(f,x0,tol,maxit,delta):
     # the error associated with the calculated root, 
     # and the number of iterations taken to evaluate the root
     return x_new, f(x_new), error, num_it 
+
+print(my_linear_interpolation([0.,0.5,1. ],[0.,0.25,1.  ],[0.25]))
 
