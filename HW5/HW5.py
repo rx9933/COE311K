@@ -1,6 +1,7 @@
 import numpy as np
 error = "error"
 
+# Problem 2
 def my_finite_diff(fx, xi, fd_type):
     if len(fx) != len(xi):
         raise ValueError("Lengths of fx and xi should be the same")
@@ -20,3 +21,21 @@ def my_finite_diff(fx, xi, fd_type):
     
     return dfxi
 
+# Problem 3
+def fourth_order_diff(f, xi, h):
+    if h <= 0:
+        raise ValueError("h must be positive")
+    
+    dfxi = np.zeros_like(xi)
+    
+    for i in range(len(xi)):
+        if i < 2 or i > len(xi) - 3:
+            # Use forward/backward difference for points near the boundaries
+            if i < 2:
+                dfxi[i] = (-f(xi[i+2]) + 8*f(xi[i+1]) - 8*f(xi[i-1]) + f(xi[i-2])) / (12*h)
+            else:
+                dfxi[i] = (-f(xi[i+2]) + 8*f(xi[i+1]) - 8*f(xi[i-1]) + f(xi[i-2])) / (12*h)
+        else:
+            dfxi[i] = (-f(xi[i+2]) + 8*f(xi[i+1]) - 8*f(xi[i-1]) + f(xi[i-2])) / (12*h)
+    
+    return dfxi
